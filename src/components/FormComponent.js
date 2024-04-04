@@ -47,6 +47,8 @@ const FormComponent = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          height:'100vh',
+          width: '100vw',
         }}
       >
         <div style={{ display: "flex", marginBottom: "16px" }}>

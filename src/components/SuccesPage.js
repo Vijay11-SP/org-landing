@@ -47,11 +47,18 @@ function SuccesPage() {
 
     function checkTokenExpired() {
         try {
-            setinfo(kc.isTokenExpired(5).toString())
+            setinfo(kcObj.current.isTokenExpired(5).toString())
         }
         catch (err) {
             setinfo(err);
         }
+    }
+
+
+    function updateToken() {
+        kcObj.current.updateToken(10)
+            .then((refreshed) => { setinfo('Token Refreshed: ' + refreshed.toString()) })
+            .catch((err) => { setinfo(err) })
     }
 
     const [info, setinfo] = useState("")
@@ -83,22 +90,21 @@ function SuccesPage() {
 
         // kc.onAuthError = () => { console.log('Error');}
 
-
-
-
     }, [])
 
 
     return (
-        <div>
+        <div className='container'>
             <div>
                 Login Was a success.
             </div>
             <Button
                 variant="contained"
                 color="primary"
-                style={{ marginTop: "16px" }}
-
+                style={{
+                    marginTop: "16px",
+                    background: '#D37676'
+                }}
                 onClick={logout}
             >
                 Log Out
@@ -106,7 +112,10 @@ function SuccesPage() {
             <Button
                 variant="contained"
                 color="primary"
-                style={{ marginTop: "16px" }}
+                style={{
+                    marginTop: "16px",
+                    background: '#B0C5A4'
+                }}
 
                 onClick={login}
             >
@@ -115,7 +124,10 @@ function SuccesPage() {
             <Button
                 variant="contained"
                 color="primary"
-                style={{ marginTop: "16px" }}
+                style={{
+                    marginTop: "16px",
+                    background: '#7469B6'
+                }}
 
                 onClick={showAccessToken}
             >
@@ -124,7 +136,10 @@ function SuccesPage() {
             <Button
                 variant="contained"
                 color="primary"
-                style={{ marginTop: "16px" }}
+                style={{
+                    marginTop: "16px",
+                    background: '#F6995C'
+                }}
 
                 onClick={showParsedAccesstoken}
             >
@@ -133,28 +148,31 @@ function SuccesPage() {
             <Button
                 variant="contained"
                 color="primary"
-                style={{ marginTop: "16px" }}
+                style={{
+                    marginTop: "16px",
+                    background: '#51829B'
+                }}
 
                 onClick={checkTokenExpired}
             >
                 Check Token expired
             </Button>
+
             <Button
                 variant="contained"
                 color="primary"
                 style={{ marginTop: "16px" }}
 
-                onClick={checkTokenExpired}
+                onClick={updateToken}
             >
-                Check Token expired
+                Update Token (if about to expire)
             </Button>
-            <div className='showinfo'>
-                <div>
+            <p className='showinfo' style={{ wordBreak: 'break-all' }}>
 
-                    {info}
-                </div>
-            </div>
+                {info}
+            </p>
         </div>
+
     )
 }
 
