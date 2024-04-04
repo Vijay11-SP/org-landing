@@ -1,19 +1,18 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Keycloak from 'keycloak-js';
 import { Button } from '@mui/material';
-
+import "../App.css"
 
 function SuccesPage() {
 
 
     const isRun = useRef(false);
-
+    const kcObj = useRef({});
     const realm = localStorage.getItem("org") || "";
     const clientId = localStorage.getItem("app") || "";
 
     // const realm = localStorage.getItem("org") ? localStorage.getItem("org") : "";
     // const clientId = localStorage.getItem("app") ? localStorage.getItem("app") : "";
-
 
     let initOptions = {
         url: 'https://keycloak-qa.solytics.us',
@@ -30,11 +29,32 @@ function SuccesPage() {
 
 
     function logout() {
-        if (kc) { // Ensure Keycloak is initialized before calling logout
-          kc.logout({ redirectUri: 'http://localhost:3000/auth' });
+        if (kcObj.current) { // Ensure Keycloak is initialized before calling logout
+            kcObj.current.logout({ redirectUri: 'http://localhost:3000/auth' });
         }
-      }
-    
+    }
+
+
+    function login() { kcObj.current.login() }
+
+    function showAccessToken() {
+
+        setinfo(kcObj.current.token)
+    }
+
+
+    function showParsedAccesstoken() { setinfo(JSON.stringify(kcObj.current.tokenParsed)) }
+
+    function checkTokenExpired() {
+        try {
+            setinfo(kc.isTokenExpired(5).toString())
+        }
+        catch (err) {
+            setinfo(err);
+        }
+    }
+
+    const [info, setinfo] = useState("")
 
     useEffect(() => {
 
@@ -50,6 +70,9 @@ function SuccesPage() {
             // silentCheckSsoRedirectUri: window.location.assign('https://keycloak-qa.solytics.us'),
             checkLoginIframe: false,
             // pkceMethod: 'S256'
+        }).then(() => {
+            console.log(kc);
+            kcObj.current = kc;
         }).catch((err) => {
             console.log(err);
             // window.location.assign("https://keycloak-qa.solytics.us");
@@ -80,6 +103,57 @@ function SuccesPage() {
             >
                 Log Out
             </Button>
+            <Button
+                variant="contained"
+                color="primary"
+                style={{ marginTop: "16px" }}
+
+                onClick={login}
+            >
+                Log In
+            </Button>
+            <Button
+                variant="contained"
+                color="primary"
+                style={{ marginTop: "16px" }}
+
+                onClick={showAccessToken}
+            >
+                Show Access Token
+            </Button>
+            <Button
+                variant="contained"
+                color="primary"
+                style={{ marginTop: "16px" }}
+
+                onClick={showParsedAccesstoken}
+            >
+                Show Parsed Access token
+            </Button>
+            <Button
+                variant="contained"
+                color="primary"
+                style={{ marginTop: "16px" }}
+
+                onClick={checkTokenExpired}
+            >
+                Check Token expired
+            </Button>
+            <Button
+                variant="contained"
+                color="primary"
+                style={{ marginTop: "16px" }}
+
+                onClick={checkTokenExpired}
+            >
+                Check Token expired
+            </Button>
+            <div className='showinfo'>
+                <div>
+
+                    {info}
+                </div>
+            </div>
         </div>
     )
 }
